@@ -2,6 +2,7 @@
   user: vagrant
   sudo: true
   tasks:
+  # Install the base software
   - name: Install the HaLVM repo
     dnf: name=http://www.galois.com/~awick/halvm-fedora/22/halvm-yum-repo-22-1.fc22.noarch.rpm state=present
   - name: Update all the packages
@@ -20,3 +21,27 @@
     dnf: pkg=halvm-xen-devel state=present
   - name: Install the HaLVM
     dnf: pkg=HaLVM state=present
+  # Set Xen to be the default
+  - name: Set default boot option
+    command: grub2-set-default "Fedora, with Xen hypervisor"
+  - name: Regenerate GRUB
+    command: grub2-mkconfig -o /boot/grub2/grub.cfg
+  # Install the network configurations, set those up
+  - name: Loopback configuraiton
+    copy: src="ifcfg-lo" dest="/etc/sysconfig/network-scripts/ifcfg-lo"
+          owner="root" group="root" mode=755
+  - name: NIC (NAT) configuraiton
+    copy: src="ifcfg-enp0s3" dest="/etc/sysconfig/network-scripts/ifcfg-enp0s3"
+          owner="root" group="root" mode=755
+  - name: NIC (Local) configuraiton
+    copy: src="ifcfg-enp0s8" dest="/etc/sysconfig/network-scripts/ifcfg-enp0s8"
+          owner="root" group="root" mode=755
+  - name: Bridge configuraiton
+    copy: src="ifcfg-xenbr0" dest="/etc/sysconfig/network-scripts/ifcfg-xenbr0"
+          owner="root" group="root" mode=755
+  - name: Install bridge utilities
+    dnf: pkg=bridge-utils state=present
+  - name: Install Ethernet utilities
+    dnf: pkg=ethtool state=present
+  - name: Network configuration enabled
+    service: name=network enabled=yes

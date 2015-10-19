@@ -1,0 +1,22 @@
+- hosts: all
+  user: vagrant
+  sudo: true
+  tasks:
+  - name: Install the HaLVM repo
+    dnf: name=http://www.galois.com/~awick/halvm-fedora/22/halvm-yum-repo-22-1.fc22.noarch.rpm state=present
+  - name: Update all the packages
+    dnf: name=* state=latest
+  - name: Install vim
+    dnf: pkg=vim-enhanced state=present
+  - name: Install tmux
+    dnf: pkg=tmux state=present
+  - name: Install zsh
+    dnf: pkg=zsh state=present
+  - name: Install git
+    dnf: pkg=git state=present
+  - name: Install halvm-xen
+    dnf: pkg=halvm-xen state=present
+  - name: Install halvm-xen-devel
+    dnf: pkg=halvm-xen-devel state=present
+  - name: Install the HaLVM
+    dnf: pkg=HaLVM state=present

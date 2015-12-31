@@ -12,9 +12,9 @@ Vagrant.configure(2) do |config|
 
   config.vm.provider "virtualbox" do |vb|
     # Display the VirtualBox GUI when booting the machine
-    vb.gui = true
+    # vb.gui = true
     # Customize the amount of memory on the VM:
-    vb.memory = "1024"
+    vb.memory = "4096"
     # Make sure this is set to Other-64
     vb.customize ["modifyvm", :id, "--ostype", "Other_64"]
     vb.customize ["modifyvm", :id, "--nicpromisc2", "allow-all"]

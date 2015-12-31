@@ -7,20 +7,10 @@
     dnf: name=http://www.galois.com/~awick/halvm-fedora/22/halvm-yum-repo-22-1.fc22.noarch.rpm state=present
   - name: Update all the packages
     dnf: name=* state=latest
-  - name: Install vim
-    dnf: pkg=vim-enhanced state=present
-  - name: Install tmux
-    dnf: pkg=tmux state=present
-  - name: Install zsh
-    dnf: pkg=zsh state=present
-  - name: Install git
-    dnf: pkg=git state=present
-  - name: Install halvm-xen
-    dnf: pkg=halvm-xen state=present
-  - name: Install halvm-xen-devel
-    dnf: pkg=halvm-xen-devel state=present
-  - name: Install the HaLVM
-    dnf: pkg=HaLVM state=present
+  - name: Install a bunch of useful tools
+    dnf: pkg=vim-enhanced,tmux,zsh,git,guestfish state=present
+  - name: Install halvm-xen and the HaLVM
+    dnf: pkg=halvm-xen,halvm-xen-devel,HaLVM state=present
   # Set Xen to be the default
   - name: Set default boot option
     command: grub2-set-default "Fedora, with Xen hypervisor"

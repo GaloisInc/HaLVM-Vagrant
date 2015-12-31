@@ -1,0 +1,18 @@
+- hosts: all
+  user: vagrant
+  sudo: true
+  tasks:
+  # Install and update the base software
+  - name: Update all the packages
+    dnf: name=* state=latest
+  - name: Install RPM tools
+    dnf: name=rpm-build state=present
+  - name: Install glibc-headers and some other tools
+    dnf: name=glibc-headers,gcc,kernel-devel,make,libselinux-python state=present
+  # Re-install the VirtualBox additions
+  - name: Find the VirtualBox additions
+    shell: ls /opt
+    register: vbox_dir
+  - name: Re-run guest additions stuff, just in case.
+    shell: ./vboxadd setup chdir=/opt/{{item}}/init
+    with_items: vbox_dir.stdout_lines

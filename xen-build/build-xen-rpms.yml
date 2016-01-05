@@ -1,17 +1,10 @@
 - hosts: all
   user: vagrant
   tasks:
-  - name: Find old source RPMs
-    shell: ls /home/vagrant/xen*src.rpm
-    register: rpms_to_clean
-    ignore_errors: yes
   - name: Remove older source RPMs
-    file: name={{item}} state=absent
-    with_items: rpms_to_clean.stdout_lines
+    shell: rm -f *.src.rpm
   - name: Clean out the build directories
     file: name=/home/vagrant/rpmbuild state=absent
-  - name: Make the destination directory
-    file: name=/vagrant/repos/{{ansible_distribution_version}} state=directory
   - name: Fetch Xen Source rpm
     raw: dnf download --source xen
   - name: Install Xen Source rpm
@@ -33,9 +26,14 @@
     replace: dest=/home/vagrant/rpmbuild/SPECS/halvm-xen.spec regexp="dist-xen$" replace='verbose=y dist-xen'
   - name: Build the RPMs
     shell: rpmbuild -ba rpmbuild/SPECS/halvm-xen.spec
+  - name: Get the name of the directory
+    shell: ls /home/vagrant/rpmbuild/RPMS/
+    register: platform
   - name: Copy the binary RPMs
-    shell: cp -r rpmbuild/RPMS /vagrant/repos/{{ansible_distribution_version}}
+    shell: cp -r rpmbuild/RPMS/*/* /vagrant/repos/{{ansible_distribution_version}}/{{item}}/
+    with_items: platform.stdout_lines
   - name: Copy the source RPMs
-    shell: cp -r rpmbuild/SRPMS /vagrant/repos/{{ansible_distribution_version}}
+    shell: cp -r rpmbuild/SRPMS/* /vagrant/repos/{{ansible_distribution_version}}/{{item}}/
+    with_items: platform.stdout_lines
 
  

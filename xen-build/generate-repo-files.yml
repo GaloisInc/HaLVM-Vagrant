@@ -1,0 +1,31 @@
+- hosts: fedora22:fedora23
+  user: vagrant
+  tasks:
+  - name: Install the RPM dev tools
+    dnf: pkg=rpmdevtools state=present
+    sudo: true
+  - name: Clean out the build directories
+    file: name=/home/vagrant/rpmbuild state=absent
+  - name: ... and then remake them
+    shell: rpmdev-setuptree
+  - name: Make the destination directory
+    file: name=/vagrant/repos/{{ansible_distribution_version}} state=directory
+  - name: Copy over the repo file
+    copy: src=halvm.repo dest=/home/vagrant/rpmbuild/SOURCES/halvm.repo
+  - name: Copy over the spec file
+    copy: src=halvm-yum-repo.spec dest=/home/vagrant/rpmbuild/SPECS/halvm-yum-repo.spec
+  - name: Download the HaLVM public key from Galois
+    get_url: url=http://www.galois.com/~awick/halvm-fedora/RPM-GPG-KEY-HaLVM
+             dest=/home/vagrant/rpmbuild/SOURCES/RPM-GPG-KEY-HaLVM
+  - name: Build the RPMs
+    shell: rpmbuild -ba rpmbuild/SPECS/halvm-yum-repo.spec
+  - name: Copy the binary RPMs (x86_64)
+    shell: cp -r rpmbuild/RPMS/noarch/* /vagrant/repos/{{ansible_distribution_version}}/x86_64/
+  - name: Copy the binary RPMs (i686)
+    shell: cp -r rpmbuild/RPMS/noarch/* /vagrant/repos/{{ansible_distribution_version}}/i686/
+  - name: Copy the source RPMs (x86_64)
+    shell: cp -r rpmbuild/SRPMS/* /vagrant/repos/{{ansible_distribution_version}}/x86_64/
+  - name: Copy the source RPMs (i686)
+    shell: cp -r rpmbuild/SRPMS/* /vagrant/repos/{{ansible_distribution_version}}/i686/
+
+ 

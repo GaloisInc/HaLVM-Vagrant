@@ -1,0 +1,9 @@
+TYPE="Ethernet"
+ONBOOT=yes
+BOOTPROTO="none"
+NAME="enp0s8"
+DEVICE="enp0s8"
+BRIDGE=xenbr0
+NM_CONTROLLED=no
+ZONE=trusted
+PEERDNS=no

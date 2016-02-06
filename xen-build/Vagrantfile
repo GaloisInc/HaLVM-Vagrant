@@ -1,0 +1,27 @@
+# vim: set ft=ruby:
+Vagrant.configure(2) do |config|
+
+  config.vm.provider "virtualbox" do |vb|
+    vb.memory = "4096"
+  end
+
+  config.vm.define "fedora22" do |f22|
+    f22.vm.box = 'box-cutter/fedora22'
+  end
+  config.vm.define "fedora32-22" do |f32_22|
+    f32_22.vm.box = "acw/fedora32-22"
+  end
+  config.vm.define "fedora23" do |f23|
+    f23.vm.box = 'box-cutter/fedora23'
+  end
+  config.vm.define "fedora32-23" do |f32_23|
+    f32_23.vm.box = "acw/fedora32-23"
+  end
+
+  config.vm.provision "ansible" do |ans1|
+    ans1.playbook = "prep-fedora23.yml"
+  end
+  config.vm.provision "ansible" do |ans1|
+    ans1.playbook = "prep-xen-builder.yml"
+  end
+end

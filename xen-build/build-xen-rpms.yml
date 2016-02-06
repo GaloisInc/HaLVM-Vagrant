@@ -1,0 +1,45 @@
+- hosts: all
+  user: vagrant
+  tasks:
+  - name: Remove older source RPMs
+    shell: rm -f *.src.rpm
+  - name: Clean out the build directories
+    file: name=/home/vagrant/rpmbuild state=absent
+  - name: Fetch Xen Source rpm
+    raw: dnf download --source xen
+  - name: Install Xen Source rpm
+    shell: rpm -i "xen*src.rpm"
+  - name: Install build dependencies
+    shell: dnf builddep -y /home/vagrant/rpmbuild/SPECS/xen.spec
+    sudo: true
+  - name: Copy xen.spec to halvm-xen.spec
+    shell: cp xen.spec halvm-xen.spec chdir=/home/vagrant/rpmbuild/SPECS
+  - name: Replace %{name} with xen
+    replace: dest=/home/vagrant/rpmbuild/SPECS/halvm-xen.spec regexp="%{name}" replace='xen'
+  - name: Fix the Name field
+    replace: dest=/home/vagrant/rpmbuild/SPECS/halvm-xen.spec regexp="^Name:.*xen$" replace="Name:halvm-xen"
+  - name: Fix the URL field
+    replace: dest=/home/vagrant/rpmbuild/SPECS/halvm-xen.spec regexp="^URL:.*$" replace="URL:http://halvm.org/"
+  - name: Fix the requires fields (1)
+    replace: dest=/home/vagrant/rpmbuild/SPECS/halvm-xen.spec regexp="^Requires:.*xen-r" replace="Requires:halvm-xen-r"
+  - name: Fix the requires fields (2)
+    replace: dest=/home/vagrant/rpmbuild/SPECS/halvm-xen.spec regexp="^Requires:.*xen-l" replace="Requires:halvm-xen-l"
+  - name: Fix the requires fields (3)
+    replace: dest=/home/vagrant/rpmbuild/SPECS/halvm-xen.spec regexp="^Requires:.*xen-o" replace="Requires:halvm-xen-o"
+  - name: Fix the setup command
+    replace: dest=/home/vagrant/rpmbuild/SPECS/halvm-xen.spec regexp="^%setup -q" replace="%setup -q -n xen-%{version}"
+  - name: Make sure to build Xen with verbose=y
+    replace: dest=/home/vagrant/rpmbuild/SPECS/halvm-xen.spec regexp="dist-xen$" replace='verbose=y dist-xen'
+  - name: Build the RPMs
+    shell: rpmbuild -ba rpmbuild/SPECS/halvm-xen.spec
+  - name: Get the name of the directory
+    shell: ls /home/vagrant/rpmbuild/RPMS/
+    register: platform
+  - name: Copy the binary RPMs
+    shell: cp -r rpmbuild/RPMS/*/* /vagrant/repos/{{ansible_distribution_version}}/{{item}}/
+    with_items: platform.stdout_lines
+  - name: Copy the source RPMs
+    shell: cp -r rpmbuild/SRPMS/* /vagrant/repos/{{ansible_distribution_version}}/{{item}}/
+    with_items: platform.stdout_lines
+
+ 

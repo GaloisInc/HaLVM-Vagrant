@@ -1,0 +1,10 @@
+- hosts: fedora23:fedora32-23
+  user: vagrant
+  gather_facts: false
+  sudo: true
+  tasks:
+  # Prep to deal with Ansible not totally being cool with F23
+  - name: Install Ansible Python dependencies.
+    raw: dnf install -y python2 python2-dnf libselinux-python
+  - name: Explicitly gather facts.
+    setup:

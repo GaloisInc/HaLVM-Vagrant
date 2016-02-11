@@ -1,15 +1,12 @@
 - hosts: fedora22:fedora23
   user: vagrant
   tasks:
-  - name: Install the RPM dev tools
-    dnf: pkg=rpmdevtools state=present
-    sudo: true
   - name: Clean out the build directories
     file: name=/home/vagrant/rpmbuild state=absent
-  - name: ... and then remake them
-    shell: rpmdev-setuptree
   - name: Make the destination directory
     file: name=/vagrant/repos/{{ansible_distribution_version}} state=directory
+  - name: Make the RPM build directories
+    shell: rpmdev-setuptree
   - name: Copy over the repo file
     copy: src=halvm.repo dest=/home/vagrant/rpmbuild/SOURCES/halvm.repo
   - name: Copy over the spec file

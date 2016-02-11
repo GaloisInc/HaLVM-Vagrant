@@ -11,7 +11,7 @@
     shell: rpm -i "xen*src.rpm"
   - name: Install build dependencies
     shell: dnf builddep -y /home/vagrant/rpmbuild/SPECS/xen.spec
-    sudo: true
+    become: true
   - name: Copy xen.spec to halvm-xen.spec
     shell: cp xen.spec halvm-xen.spec chdir=/home/vagrant/rpmbuild/SPECS
   - name: Replace %{name} with xen

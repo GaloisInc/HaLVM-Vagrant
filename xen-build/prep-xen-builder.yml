@@ -1,12 +1,13 @@
 - hosts: all
   user: vagrant
-  sudo: true
+  become: true
+  become_method: sudo
   tasks:
   # Install and update the base software
   - name: Update all the packages
     dnf: name=* state=latest
   - name: Install RPM tools
-    dnf: name=rpm-build state=present
+    dnf: name=rpmdevtools,fedora-packager,@development-tools state=present
   - name: Install glibc-headers and some other tools
     dnf: name=glibc-headers,gcc,kernel-devel,make,libselinux-python state=present
   # Re-install the VirtualBox additions

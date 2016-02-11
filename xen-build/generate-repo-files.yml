@@ -3,7 +3,7 @@
   tasks:
   - name: Install the RPM dev tools
     dnf: pkg=rpmdevtools state=present
-    sudo: true
+    become: true
   - name: Clean out the build directories
     file: name=/home/vagrant/rpmbuild state=absent
   - name: ... and then remake them

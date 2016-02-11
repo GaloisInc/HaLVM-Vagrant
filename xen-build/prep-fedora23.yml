@@ -1,7 +1,8 @@
 - hosts: fedora23:fedora32-23
   user: vagrant
   gather_facts: false
-  sudo: true
+  become: true
+  become_method: sudo
   tasks:
   # Prep to deal with Ansible not totally being cool with F23
   - name: Install Ansible Python dependencies.

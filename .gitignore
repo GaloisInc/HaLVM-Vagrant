@@ -1,2 +1,4 @@
 */.vagrant
 xen-build/repos
+xen-build/upstream
+.DS_Store

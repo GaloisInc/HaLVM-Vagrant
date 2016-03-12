@@ -1,7 +1,7 @@
 [halvm]
 name=HaLVM (Fedora $releasever / $basearch)
-baseurl=http://halvm-fedora.uhsure.com/$releasever/$basearch/
+baseurl=http://repos.halvm.org/$releasever/$basearch/
 enabled=1
 gpgcheck=1
-gpgkey=http://www.galois.com/~awick/halvm-fedora/RPM-GPG-KEY-HaLVM
+gpgkey=http://repos.halvm.org/RPM-GPG-KEY-HaLVM
 skip_if_unavailable=False

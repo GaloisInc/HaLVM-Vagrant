@@ -1,6 +1,6 @@
 Name:      halvm-yum-repo
 Version:   %{?fedora}
-Release:   2%{?dist}
+Release:   5%{?dist}
 Summary:   HaLVM Yum Repository Configuration
 
 Group:     System Environment/Base

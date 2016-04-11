@@ -1,0 +1,11 @@
+NAME=xenbr0
+DEVICE=xenbr0
+TYPE=Bridge
+BOOTPROTO=dhcp
+ONBOOT=yes
+DELAY=0
+NM_CONTROLLED=no
+ZONE=trusted
+PEERDNS=no
+DEFROUTE=no
+ETHTOOL_OPTS=" --offload xenbr0 tx off rx off"

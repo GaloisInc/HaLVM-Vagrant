@@ -1,6 +1,7 @@
 - hosts: all
   user: vagrant
-  sudo: true
+  become: true
+  become_method: sudo
   tasks:
   # Install the base software
   - name: Install the HaLVM repo

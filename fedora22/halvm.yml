@@ -5,7 +5,7 @@
   tasks:
   # Install the base software
   - name: Install the HaLVM repo
-    dnf: name=http://repos.halvm.org/22/x86_64/halvm-yum-repo-22-2.fc22.noarch.rpm state=present
+    dnf: name=http://repos.halvm.org/fedora-22/x86_64/halvm-yum-repo-22-3.fc22.noarch.rpm state=present
   - name: Update all the packages
     dnf: name=* state=latest
   - name: Install a bunch of useful tools

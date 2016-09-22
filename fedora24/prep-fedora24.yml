@@ -1,0 +1,11 @@
+- hosts: all
+  user: vagrant
+  gather_facts: false
+  become: true
+  become_method: sudo
+  tasks:
+  # Prep to deal with Ansible not totally being cool with F23
+  - name: Install Ansible Python dependencies.
+    raw: dnf install -y python2 python2-dnf libselinux-python util-linux-user
+  - name: Explicitly gather facts.
+    setup:

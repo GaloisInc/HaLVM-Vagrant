@@ -1,0 +1,40 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure(2) do |config|
+  # Every Vagrant development environment requires a box. You can search for
+  # boxes at https://atlas.hashicorp.com/search.
+  config.vm.box = "box-cutter/fedora24"
+
+  # The url from where the 'config.vm.box' box will be fetched if it
+  # doesn't already exist on the user's system.
+  config.vm.network "private_network", type: "dhcp"
+
+  config.vm.provider "virtualbox" do |vb|
+    # Display the VirtualBox GUI when booting the machine
+    # vb.gui = true
+    # Customize the amount of memory on the VM:
+    vb.memory = "4096"
+    # Make sure this is set to Other-64
+    vb.customize ["modifyvm", :id, "--ostype", "Other_64"]
+    vb.customize ["modifyvm", :id, "--nicpromisc2", "allow-all"]
+  end
+
+  config.vm.synced_folder ".", "/vagrant", disabled: true
+  #
+  # View the documentation for the provider you are using for more
+  # information on available options.
+
+  # Define a Vagrant Push strategy for pushing to Atlas. Other push strategies
+  # such as FTP and Heroku are also available. See the documentation at
+  # https://docs.vagrantup.com/v2/push/atlas.html for more information.
+  # config.push.define "atlas" do |push|
+  #   push.app = "YOUR_ATLAS_USERNAME/YOUR_APPLICATION_NAME"
+  # end
+  config.vm.provision "ansible" do |ansible|
+    ansible.playbook = "prep-fedora24.yml"
+  end
+  config.vm.provision "ansible" do |ansible|
+    ansible.playbook = "halvm.yml"
+  end
+end

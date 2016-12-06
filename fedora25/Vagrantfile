@@ -1,0 +1,24 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure(2) do |config|
+  config.vm.box = "box-cutter/fedora25"
+
+  config.vm.network "private_network", type: "dhcp"
+
+  config.vm.provider "virtualbox" do |vb|
+    # vb.gui = true
+    vb.memory = "4096"
+    vb.customize ["modifyvm", :id, "--ostype", "Other_64"]
+    vb.customize ["modifyvm", :id, "--nicpromisc2", "allow-all"]
+  end
+
+  config.vm.synced_folder ".", "/vagrant", disabled: true
+
+  config.vm.provision "ansible" do |ansible|
+    ansible.playbook = "prep-fedora24.yml"
+  end
+  config.vm.provision "ansible" do |ansible|
+    ansible.playbook = "halvm.yml"
+  end
+end

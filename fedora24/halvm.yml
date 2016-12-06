@@ -15,6 +15,8 @@
   # Set Xen to be the default
   - name: Set default boot option
     command: grub2-set-default "Fedora, with Xen hypervisor"
+  - name: Add debugging lines to grub config
+    lineinfile: dest=/etc/default/grub line='GRUB_CMDLINE_XEN="console_to_ring loglvl=all guest_loglvl=all"'
   - name: Regenerate GRUB
     command: grub2-mkconfig -o /boot/grub2/grub.cfg
   # Install the network configurations, set those up
@@ -36,3 +38,17 @@
     dnf: pkg=ethtool state=present
   - name: Network configuration enabled
     service: name=network enabled=yes
+  # Reboot and wait for the server to come back
+  - name: Restart into Xen
+    shell: sleep 2 && shutdown -r now "Ansible updates triggered"
+    async: 1
+    poll: 0
+    ignore_errors: true
+  - name: Wait for server to come back up
+    become: false
+    local_action:
+      module: wait_for
+        host={{ ansible_ssh_host }}
+        state=started
+        timeout=300
+        delay=1
